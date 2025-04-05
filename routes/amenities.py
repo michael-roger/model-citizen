@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from sqlalchemy import text
-from ModelCitizenApp.db import engine
+from db import engine
 
 bp = Blueprint('amenities', __name__, url_prefix='/amenities')
 
@@ -10,7 +10,7 @@ def list():
     with engine.connect() as conn:
         result = conn.execute(text("SELECT id, name, photo_url FROM amenities"))
         amenities = result.mappings().all()
-    return render_template('amenities/list.html', amenities=amenities)
+    return render_template('amenities/../templates/amenities/list.html', amenities=amenities)
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
@@ -24,7 +24,7 @@ def add():
             ), {"name": name, "photo": photo_url})
         return redirect(url_for('amenities.list'))
     # GET: display empty form
-    return render_template('amenities/form.html', amenity=None)
+    return render_template('amenities/../templates/amenities/form.html', amenity=None)
 
 @bp.route('/<int:amenity_id>/edit', methods=['GET', 'POST'])
 def edit(amenity_id):
@@ -44,7 +44,7 @@ def edit(amenity_id):
             ), {"name": name, "photo": photo_url, "id": amenity_id})
         return redirect(url_for('amenities.list'))
     # GET: display form with current amenity data
-    return render_template('amenities/form.html', amenity=amenity)
+    return render_template('amenities/../templates/amenities/form.html', amenity=amenity)
 
 @bp.route('/<int:amenity_id>/delete', methods=['POST'])
 def delete(amenity_id):

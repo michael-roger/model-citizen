@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from sqlalchemy import text
-from ModelCitizenApp.db import engine
+from db import engine
 
 bp = Blueprint('equipment', __name__, url_prefix='/equipment')
 
@@ -12,7 +12,7 @@ def list():
             "SELECT e.id, e.name, e.serial_number, e.gym_id, g.city AS gym_city "
             "FROM equipment e LEFT JOIN gyms g ON e.gym_id = g.id"
         )).mappings().all()
-    return render_template('equipment/list.html', equipment=equipment)
+    return render_template('equipment/../templates/equipment/list.html', equipment=equipment)
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
@@ -32,7 +32,7 @@ def add():
                 "VALUES (:name, :photo_url, :serial_number, :gym_id)"
             ), data)
         return redirect(url_for('equipment.list'))
-    return render_template('equipment/form.html', equipment=None, gyms=gyms)
+    return render_template('equipment/../templates/equipment/form.html', equipment=None, gyms=gyms)
 
 @bp.route('/<int:equipment_id>/edit', methods=['GET', 'POST'])
 def edit(equipment_id):
@@ -57,7 +57,7 @@ def edit(equipment_id):
                 "WHERE id = :id"
             ), data)
         return redirect(url_for('equipment.list'))
-    return render_template('equipment/form.html', equipment=equipment, gyms=gyms)
+    return render_template('equipment/../templates/equipment/form.html', equipment=equipment, gyms=gyms)
 
 @bp.route('/<int:equipment_id>/delete', methods=['POST'])
 def delete(equipment_id):

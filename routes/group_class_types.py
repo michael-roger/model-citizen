@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from sqlalchemy import text
-from ModelCitizenApp.db import engine
+from db import engine
 
 bp = Blueprint('group_class_types', __name__, url_prefix='/group_class_types')
 
@@ -8,7 +8,7 @@ bp = Blueprint('group_class_types', __name__, url_prefix='/group_class_types')
 def list():
     with engine.connect() as conn:
         types = conn.execute(text("SELECT * FROM group_class_types")).mappings().all()
-    return render_template('group_class_types/list.html', group_class_types=types)
+    return render_template('group_class_types/../templates/group_class_types/list.html', group_class_types=types)
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
@@ -22,7 +22,7 @@ def add():
                 "INSERT INTO group_class_types (name, photo_url) VALUES (:name, :photo_url)"
             ), data)
         return redirect(url_for('group_class_types.list'))
-    return render_template('group_class_types/form.html', group_class_type=None)
+    return render_template('group_class_types/../templates/group_class_types/form.html', group_class_type=None)
 
 @bp.route('/<int:type_id>/edit', methods=['GET', 'POST'])
 def edit(type_id):
@@ -43,7 +43,7 @@ def edit(type_id):
                 "UPDATE group_class_types SET name=:name, photo_url=:photo_url WHERE id = :id"
             ), data)
         return redirect(url_for('group_class_types.list'))
-    return render_template('group_class_types/form.html', group_class_type=group_class_type)
+    return render_template('group_class_types/../templates/group_class_types/form.html', group_class_type=group_class_type)
 
 @bp.route('/<int:type_id>/delete', methods=['POST'])
 def delete(type_id):

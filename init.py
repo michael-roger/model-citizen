@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from ModelCitizenApp import db
+import db
 
 app = Flask(__name__)
 
@@ -7,7 +7,8 @@ app = Flask(__name__)
 db.init_db()
 
 # Register Blueprints for each entity
-from ModelCitizenApp.routes import amenities, customers, equipment, gyms, group_class_types, group_classes, membership_types, membership_purchases, trainer_specialties, trainers
+from routes import trainers, gyms, amenities, trainer_specialties, equipment, group_classes, membership_types, \
+    customers, group_class_types, membership_purchases
 
 app.register_blueprint(amenities.bp)
 app.register_blueprint(customers.bp)
@@ -23,4 +24,4 @@ app.register_blueprint(trainers.bp)
 # Home page route
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('templates/index.html')

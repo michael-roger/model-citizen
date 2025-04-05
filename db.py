@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, text
 import os
-from ModelCitizenApp import config
+import config
 
 # Create the SQLAlchemy engine for the PostgreSQL database
 engine = create_engine(config.DATABASE_URI)

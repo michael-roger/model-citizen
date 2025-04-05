@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from sqlalchemy import text
-from ModelCitizenApp.db import engine
+from db import engine
 
 bp = Blueprint('customers', __name__, url_prefix='/customers')
 
@@ -12,7 +12,7 @@ def list():
             "SELECT id, first_name, last_name, date_of_birth, photo_url FROM customers"
         ))
         customers = result.mappings().all()
-    return render_template('customers/list.html', customers=customers)
+    return render_template('customers/../templates/customers/list.html', customers=customers)
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
@@ -50,7 +50,7 @@ def add():
                 ), {"cust": new_cust_id, "trainer": trainer_id})
         return redirect(url_for('customers.list'))
     # GET: display form
-    return render_template('customers/form.html', customer=None, gyms=gyms, trainers=trainers,
+    return render_template('customers/../templates/customers/form.html', customer=None, gyms=gyms, trainers=trainers,
                            selected_gyms=[], selected_trainers=[])
 
 @bp.route('/<int:customer_id>/edit', methods=['GET', 'POST'])
@@ -112,7 +112,7 @@ def edit(customer_id):
                 ), {"cust": customer_id, "trainer": trainer_id})
         return redirect(url_for('customers.list'))
     # GET: render form with current data and relationships
-    return render_template('customers/form.html', customer=customer, gyms=gyms, trainers=trainers,
+    return render_template('customers/../templates/customers/form.html', customer=customer, gyms=gyms, trainers=trainers,
                            selected_gyms=current_gyms, selected_trainers=current_trainers)
 
 @bp.route('/<int:customer_id>/delete', methods=['POST'])
