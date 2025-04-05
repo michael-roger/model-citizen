@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>All Equipment</h2>
+<a href="{{ url_for('equipment.add') }}" class="btn btn-primary mb-2">Add New Equipment</a>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr><th>ID</th><th>Name</th><th>Serial #</th><th>Gym Location</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    {% for item in equipment %}
+    <tr>
+        <td>{{ item['id'] }}</td>
+        <td>{{ item['name'] }}</td>
+        <td>{{ item['serial_number'] }}</td>
+        <td>
+            {% if item['gym_id'] %}
+            Gym #{{ item['gym_id'] }} ({{ item['gym_city'] }})
+            {% else %}
+            (No gym)
+            {% endif %}
+        </td>
+        <td>
+            <a href="{{ url_for('equipment.edit', equipment_id=item['id']) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form action="{{ url_for('equipment.delete', equipment_id=item['id']) }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this equipment?');">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

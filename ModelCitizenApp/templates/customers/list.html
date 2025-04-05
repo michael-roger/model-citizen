@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>All Customers</h2>
+<a href="{{ url_for('customers.add') }}" class="btn btn-primary mb-2">Add New Customer</a>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    {% for customer in customers %}
+    <tr>
+        <td>{{ customer['id'] }}</td>
+        <td>{{ customer['first_name'] }} {{ customer['last_name'] }}</td>
+        <td>
+            <a href="{{ url_for('customers.edit', customer_id=customer['id']) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form action="{{ url_for('customers.delete', customer_id=customer['id']) }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this customer?');">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

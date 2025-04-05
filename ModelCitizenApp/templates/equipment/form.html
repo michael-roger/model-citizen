@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ equipment and 'Edit Equipment' or 'Add Equipment' }}</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input name="name" id="name" type="text" class="form-control"
+               value="{{ equipment['name'] if equipment else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="serial_number" class="form-label">Serial Number</label>
+        <input name="serial_number" id="serial_number" type="text" class="form-control"
+               value="{{ equipment['serial_number'] if equipment else '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="photo_url" class="form-label">Photo URL</label>
+        <input name="photo_url" id="photo_url" type="url" class="form-control"
+               value="{{ equipment['photo_url'] if equipment else '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="gym_id" class="form-label">Gym</label>
+        <select name="gym_id" id="gym_id" class="form-select">
+            <option value="">-- None --</option>
+            {% for gym in gyms %}
+            <option value="{{ gym['id'] }}"
+                    {% if equipment and equipment['gym_id'] == gym['id'] %}selected{% endif %}>
+            {{ gym['city'] }}, {{ gym['state'] }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ url_for('equipment.list') }}" class="btn btn-light">Cancel</a>
+</form>
+{% endblock %}

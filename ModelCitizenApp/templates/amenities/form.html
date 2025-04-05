@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ amenity and 'Edit Amenity' or 'Add Amenity' }}</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input name="name" id="name" type="text" class="form-control"
+               value="{{ amenity['name'] if amenity else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="photo_url" class="form-label">Photo URL</label>
+        <input name="photo_url" id="photo_url" type="url" class="form-control"
+               value="{{ amenity['photo_url'] if amenity else '' }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ url_for('amenities.list') }}" class="btn btn-light">Cancel</a>
+</form>
+{% endblock %}

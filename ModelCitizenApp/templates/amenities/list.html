@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>All Amenities</h2>
+<a href="{{ url_for('amenities.add') }}" class="btn btn-primary mb-2">Add New Amenity</a>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr><th>ID</th><th>Name</th><th>Photo URL</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    {% for amenity in amenities %}
+    <tr>
+        <td>{{ amenity['id'] }}</td>
+        <td>{{ amenity['name'] }}</td>
+        <td>{{ amenity['photo_url'] }}</td>
+        <td>
+            <a href="{{ url_for('amenities.edit', amenity_id=amenity['id']) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form action="{{ url_for('amenities.delete', amenity_id=amenity['id']) }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this amenity?');">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

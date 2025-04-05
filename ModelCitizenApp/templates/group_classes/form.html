@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ group_class and 'Edit Class' or 'Schedule New Class' }}</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="class_datetime_utc" class="form-label">Class Date & Time (UTC)</label>
+        <input name="class_datetime_utc" id="class_datetime_utc" type="datetime-local" class="form-control"
+               value="{{ group_class['class_datetime_utc']|replace(' ', 'T') if group_class else '' }}" required>
+        <!-- Note: Using datetime-local; ensure to input in UTC or adjust accordingly -->
+    </div>
+    <div class="mb-3">
+        <label for="group_class_type_id" class="form-label">Class Type</label>
+        <select name="group_class_type_id" id="group_class_type_id" class="form-select">
+            <option value="">-- Select Class Type --</option>
+            {% for ct in types %}
+            <option value="{{ ct['id'] }}"
+                    {% if group_class and group_class['group_class_type_id'] == ct['id'] %}selected{% endif %}>
+            {{ ct['name'] }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="gym_id" class="form-label">Gym Location</label>
+        <select name="gym_id" id="gym_id" class="form-select">
+            <option value="">-- Select Gym --</option>
+            {% for gym in gyms %}
+            <option value="{{ gym['id'] }}"
+                    {% if group_class and group_class['gym_id'] == gym['id'] %}selected{% endif %}>
+            {{ gym['city'] }}, {{ gym['state'] }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="trainer_id" class="form-label">Trainer</label>
+        <select name="trainer_id" id="trainer_id" class="form-select">
+            <option value="">-- Select Trainer --</option>
+            {% for tr in trainers %}
+            <option value="{{ tr['id'] }}"
+                    {% if group_class and group_class['trainer_id'] == tr['id'] %}selected{% endif %}>
+            {{ tr['first_name'] }} {{ tr['last_name'] }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <!-- Customers (attendees) multi-select -->
+    <div class="mb-3">
+        <label class="form-label">Enrolled Customers:</label>
+        {% for cust in customers %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="cust_{{ cust['id'] }}" name="customers"
+                   value="{{ cust['id'] }}" {% if cust['id'] in selected_customers %}checked{% endif %}>
+            <label class="form-check-label" for="cust_{{ cust['id'] }}">
+                {{ cust['first_name'] }} {{ cust['last_name'] }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ url_for('group_classes.list') }}" class="btn btn-light">Cancel</a>
+</form>
+{% endblock %}

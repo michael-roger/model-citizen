@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ customer and 'Edit Customer' or 'Add Customer' }}</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="first_name" class="form-label">First Name</label>
+        <input name="first_name" id="first_name" type="text" class="form-control"
+               value="{{ customer['first_name'] if customer else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="last_name" class="form-label">Last Name</label>
+        <input name="last_name" id="last_name" type="text" class="form-control"
+               value="{{ customer['last_name'] if customer else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="date_of_birth" class="form-label">Date of Birth</label>
+        <input name="date_of_birth" id="date_of_birth" type="date" class="form-control"
+               value="{{ customer['date_of_birth'] if customer and customer['date_of_birth'] else '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="photo_url" class="form-label">Photo URL</label>
+        <input name="photo_url" id="photo_url" type="url" class="form-control"
+               value="{{ customer['photo_url'] if customer else '' }}">
+    </div>
+    <!-- Multi-select for Gyms -->
+    <div class="mb-3">
+        <label class="form-label">Gyms (assign customer to gyms):</label>
+        {% for gym in gyms %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="gym_{{ gym['id'] }}" name="gyms"
+                   value="{{ gym['id'] }}" {% if gym['id'] in selected_gyms %}checked{% endif %}>
+            <label class="form-check-label" for="gym_{{ gym['id'] }}">
+                {{ gym['city'] }}, {{ gym['state'] }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Multi-select for Trainers -->
+    <div class="mb-3">
+        <label class="form-label">Personal Trainers:</label>
+        {% for trainer in trainers %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="trainer_{{ trainer['id'] }}" name="trainers"
+                   value="{{ trainer['id'] }}" {% if trainer['id'] in selected_trainers %}checked{% endif %}>
+            <label class="form-check-label" for="trainer_{{ trainer['id'] }}">
+                {{ trainer['first_name'] }} {{ trainer['last_name'] }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ url_for('customers.list') }}" class="btn btn-light">Cancel</a>
+</form>
+{% endblock %}

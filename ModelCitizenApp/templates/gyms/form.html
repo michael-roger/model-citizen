@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ gym and 'Edit Gym' or 'Add Gym' }}</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="address1" class="form-label">Address 1</label>
+        <input name="address1" id="address1" type="text" class="form-control"
+               value="{{ gym['address1'] if gym else '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="address2" class="form-label">Address 2</label>
+        <input name="address2" id="address2" type="text" class="form-control"
+               value="{{ gym['address2'] if gym else '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="city" class="form-label">City</label>
+        <input name="city" id="city" type="text" class="form-control"
+               value="{{ gym['city'] if gym else '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="state" class="form-label">State</label>
+        <input name="state" id="state" type="text" class="form-control" maxlength="2"
+               value="{{ gym['state'] if gym else '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="zip" class="form-label">Zip</label>
+        <input name="zip" id="zip" type="text" class="form-control"
+               value="{{ gym['zip'] if gym else '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="photo_url" class="form-label">Photo URL</label>
+        <input name="photo_url" id="photo_url" type="url" class="form-control"
+               value="{{ gym['photo_url'] if gym else '' }}">
+    </div>
+    <!-- Amenities checkboxes -->
+    <div class="mb-3">
+        <label class="form-label">Amenities:</label>
+        {% for amenity in amenities %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="amenity_{{ amenity['id'] }}" name="amenities"
+                   value="{{ amenity['id'] }}" {% if amenity['id'] in selected_amenities %}checked{% endif %}>
+            <label class="form-check-label" for="amenity_{{ amenity['id'] }}">{{ amenity['name'] }}</label>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Trainers checkboxes -->
+    <div class="mb-3">
+        <label class="form-label">Trainers at this Gym:</label>
+        {% for trainer in trainers %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="trainer_{{ trainer['id'] }}" name="trainers"
+                   value="{{ trainer['id'] }}" {% if trainer['id'] in selected_trainers %}checked{% endif %}>
+            <label class="form-check-label" for="trainer_{{ trainer['id'] }}">
+                {{ trainer['first_name'] }} {{ trainer['last_name'] }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Customers checkboxes -->
+    <div class="mb-3">
+        <label class="form-label">Members (Customers) at this Gym:</label>
+        {% for cust in customers %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="cust_{{ cust['id'] }}" name="customers"
+                   value="{{ cust['id'] }}" {% if cust['id'] in selected_customers %}checked{% endif %}>
+            <label class="form-check-label" for="cust_{{ cust['id'] }}">
+                {{ cust['first_name'] }} {{ cust['last_name'] }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ url_for('gyms.list') }}" class="btn btn-light">Cancel</a>
+</form>
+{% endblock %}

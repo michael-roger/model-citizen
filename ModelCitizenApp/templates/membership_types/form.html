@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ membership_type and 'Edit Membership Type' or 'Add Membership Type' }}</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input name="name" id="name" type="text" class="form-control"
+               value="{{ membership_type['name'] if membership_type else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input name="price" id="price" type="number" step="0.01" class="form-control"
+               value="{{ membership_type['price'] if membership_type and membership_type['price'] != None else '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea name="description" id="description" class="form-control">{{ membership_type['description'] if membership_type else '' }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ url_for('membership_types.list') }}" class="btn btn-light">Cancel</a>
+</form>
+{% endblock %}

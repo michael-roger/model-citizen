@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>All Membership Purchases</h2>
+<a href="{{ url_for('membership_purchases.add') }}" class="btn btn-primary mb-2">Add New Purchase</a>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>ID</th><th>Membership Type</th><th>Start Date</th><th>End Date</th><th>Amount Charged</th><th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for mp in purchases %}
+    <tr>
+        <td>{{ mp['id'] }}</td>
+        <td>{{ mp['membership_type_name'] if mp['membership_type_name'] else 'N/A' }}</td>
+        <td>{{ mp['date_of_membership_start'] }}</td>
+        <td>{{ mp['date_of_membership_end'] }}</td>
+        <td>{{ mp['amount_charged'] }}</td>
+        <td>
+            <a href="{{ url_for('membership_purchases.edit', purchase_id=mp['id']) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form action="{{ url_for('membership_purchases.delete', purchase_id=mp['id']) }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this purchase record?');">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

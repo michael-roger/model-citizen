@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ specialty and 'Edit Trainer Specialty' or 'Add Trainer Specialty' }}</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input name="name" id="name" type="text" class="form-control"
+               value="{{ specialty['name'] if specialty else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea name="description" id="description" class="form-control">{{ specialty['description'] if specialty else '' }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ url_for('trainer_specialties.list') }}" class="btn btn-light">Cancel</a>
+</form>
+{% endblock %}

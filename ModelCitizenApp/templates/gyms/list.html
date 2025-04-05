@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>All Gyms</h2>
+<a href="{{ url_for('gyms.add') }}" class="btn btn-primary mb-2">Add New Gym</a>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr><th>ID</th><th>Address</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    {% for gym in gyms %}
+    <tr>
+        <td>{{ gym['id'] }}</td>
+        <td>
+            {{ gym['address1'] }}{% if gym['address2'] %}, {{ gym['address2'] }}{% endif %},
+            {{ gym['city'] }}, {{ gym['state'] }} {{ gym['zip'] }}
+        </td>
+        <td>
+            <a href="{{ url_for('gyms.edit', gym_id=gym['id']) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form action="{{ url_for('gyms.delete', gym_id=gym['id']) }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this gym?');">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
