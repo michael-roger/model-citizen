@@ -65,10 +65,10 @@ def edit(customer_id):
         # Current related gyms and trainers for this customer
         current_gyms = {row['gym_id'] for row in conn.execute(text(
             "SELECT gym_id FROM gym_customer_mappings WHERE customer_id = :cust"
-        ), {"cust": customer_id})}
+        ), {"cust": customer_id}).mappings()}
         current_trainers = {row['trainer_id'] for row in conn.execute(text(
             "SELECT trainer_id FROM customer_trainer_mappings WHERE customer_id = :cust"
-        ), {"cust": customer_id})}
+        ), {"cust": customer_id}).mappings()}
     if request.method == 'POST':
         data = {
             "id": customer_id,
