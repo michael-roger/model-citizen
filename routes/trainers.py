@@ -40,7 +40,9 @@ def add():
             new_trainer_id = result.scalar_one()
             for gym_id in selected_gyms:
                 conn.execute(text(
-                    "INSERT INTO gym_trainer_mappings (gym_id, trainer_id) VALUES (:gym, :trainer)"
+                    "INSERT INTO gym_trainer_mappings (gym_id, trainer_id) "
+                    "VALUES (:gym, :trainer) "
+                    "ON CONFLICT (gym_id, trainer_id) DO NOTHING"
                 ), {"gym": gym_id, "trainer": new_trainer_id})
             for spec_id in selected_specialties:
                 conn.execute(text(
@@ -95,18 +97,20 @@ def edit(trainer_id):
                 "photo_url=:photo_url, certifications=:certifications, years_experience=:years_experience WHERE id = :id"
             ), data)
             for gym_id in to_add_gyms:
-                conn.execute(text("""
-                    INSERT INTO gym_trainer_mappings (gym_id, trainer_id)
-                    VALUES (:gym, :trainer)
-                    ON CONFLICT (gym_id, trainer_id) DO NOTHING
-                """), {"gym": gym_id, "trainer": trainer_id})
+                conn.execute(text(
+                    "INSERT INTO gym_trainer_mappings (gym_id, trainer_id) "
+                    "VALUES (:gym, :trainer) "
+                    "ON CONFLICT (gym_id, trainer_id) DO NOTHING"
+                ), {"gym": gym_id, "trainer": trainer_id})
             for gym_id in to_remove_gyms:
                 conn.execute(text(
                     "DELETE FROM gym_trainer_mappings WHERE gym_id = :gym AND trainer_id = :trainer"
                 ), {"gym": gym_id, "trainer": trainer_id})
             for spec_id in to_add_specs:
                 conn.execute(text(
-                    "INSERT INTO trainer_trainer_specialty_mappings (trainer_id, trainer_specialty_id) VALUES (:trainer, :spec)"
+                    "INSERT INTO trainer_trainer_specialty_mappings (trainer_id, trainer_specialty_id) "
+                    "VALUES (:trainer, :spec) "
+                    "ON CONFLICT (trainer_id, trainer_specialty_id) DO NOTHING"
                 ), {"trainer": trainer_id, "spec": spec_id})
             for spec_id in to_remove_specs:
                 conn.execute(text(

@@ -40,13 +40,15 @@ def add():
             for gym_id in selected_gyms:
                 conn.execute(text(
                     "INSERT INTO gym_customer_mappings (gym_id, customer_id, created_datetime_utc) "
-                    "VALUES (:gym, :cust, now())"
+                    "VALUES (:gym, :cust, now()) "
+                    "ON CONFLICT (gym_id, customer_id) DO NOTHING"
                 ), {"gym": gym_id, "cust": new_cust_id})
             # Insert customer-trainer relationships
             for trainer_id in selected_trainers:
                 conn.execute(text(
                     "INSERT INTO customer_trainer_mappings (customer_id, trainer_id, created_datetime_utc) "
-                    "VALUES (:cust, :trainer, now())"
+                    "VALUES (:cust, :trainer, now()) "
+                    "ON CONFLICT (customer_id, trainer_id) DO NOTHING"
                 ), {"cust": new_cust_id, "trainer": trainer_id})
         return redirect(url_for('customers.list'))
     # GET: display form

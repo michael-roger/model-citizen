@@ -43,7 +43,8 @@ def add():
             for cust_id in selected_customers:
                 conn.execute(text(
                     "INSERT INTO customer_group_class_mappings (customer_id, group_class_id, created_datetime_utc) "
-                    "VALUES (:cust, :class, now())"
+                    "VALUES (:cust, :class, now()) "
+                    "ON CONFLICT (customer_id, group_class_id) DO NOTHING"
                 ), {"cust": cust_id, "class": new_class_id})
         return redirect(url_for('group_classes.list'))
     return render_template('group_classes/form.html', group_class=None, types=types, gyms=gyms, trainers=trainers,

@@ -36,7 +36,8 @@ def add():
             for cust_id in selected_customers:
                 conn.execute(text(
                     "INSERT INTO customer_membership_purchase_mappings (customer_id, membership_purchase_id) "
-                    "VALUES (:cust, :mp)"
+                    "VALUES (:cust, :mp) "
+                    "ON CONFLICT (customer_id, membership_purchase_id) DO NOTHING"
                 ), {"cust": cust_id, "mp": new_purchase_id})
         return redirect(url_for('membership_purchases.list'))
     return render_template('membership_purchases/form.html', purchase=None,

@@ -40,18 +40,23 @@ def add():
             # Insert gym-amenity mappings
             for amen_id in selected_amenities:
                 conn.execute(text(
-                    "INSERT INTO gym_amenity_mappings (gym_id, amenity_id) VALUES (:gym, :amen)"
+                    "INSERT INTO gym_amenity_mappings (gym_id, amenity_id) "
+                    "VALUES (:gym, :amen) "
+                    "ON CONFLICT (gym_id, amenity_id) DO NOTHING"
                 ), {"gym": new_gym_id, "amen": amen_id})
             # Insert gym-trainer mappings
             for trainer_id in selected_trainers:
                 conn.execute(text(
-                    "INSERT INTO gym_trainer_mappings (gym_id, trainer_id) VALUES (:gym, :trainer)"
+                    "INSERT INTO gym_trainer_mappings (gym_id, trainer_id) "
+                    "VALUES (:gym, :trainer) "
+                    "ON CONFLICT (gym_id, trainer_id) DO NOTHING"
                 ), {"gym": new_gym_id, "trainer": trainer_id})
             # Insert gym-customer mappings
             for cust_id in selected_customers:
                 conn.execute(text(
                     "INSERT INTO gym_customer_mappings (gym_id, customer_id, created_datetime_utc) "
-                    "VALUES (:gym, :cust, now())"
+                    "VALUES (:gym, :cust, now()) "
+                    "ON CONFLICT (gym_id, customer_id) DO NOTHING"
                 ), {"gym": new_gym_id, "cust": cust_id})
         return redirect(url_for('gyms.list'))
     # GET: render form
