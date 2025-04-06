@@ -4,6 +4,10 @@ from db import engine
 
 bp = Blueprint('trainers', __name__, url_prefix='/trainers')
 
+# Helper function to convert empty strings to None
+def empty_to_none(value):
+    return value if value else None
+
 @bp.route('/')
 def list():
     # List all trainers (a few fields for brevity)
@@ -23,7 +27,7 @@ def add():
             "first_name": request.form.get('first_name', ''),
             "last_name": request.form.get('last_name', ''),
             "date_of_hire": request.form.get('date_of_hire', None),
-            "date_of_termination": request.form.get('date_of_termination', None),
+            "date_of_termination": empty_to_none(request.form.get('date_of_termination')),
             "date_of_birth": request.form.get('date_of_birth', None),
             "job_title": request.form.get('job_title', ''),
             "photo_url": request.form.get('photo_url', ''),
@@ -68,10 +72,6 @@ def edit(trainer_id):
             "SELECT trainer_specialty_id FROM trainer_trainer_specialty_mappings WHERE trainer_id = :trainer"
         ), {"trainer": trainer_id}).mappings()}
     if request.method == 'POST':
-        # Helper function to convert empty strings to None
-        def empty_to_none(value):
-            return value if value else None
-
         data = {
             "id": trainer_id,
             "first_name": request.form.get('first_name', ''),
