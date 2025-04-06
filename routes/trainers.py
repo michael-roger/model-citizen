@@ -11,7 +11,7 @@ def list():
         trainers = conn.execute(text(
             "SELECT id, first_name, last_name, job_title, years_experience FROM trainers"
         )).mappings().all()
-    return render_template('trainers/../templates/trainers/list.html', trainers=trainers)
+    return render_template('trainers/trainers/list.html', trainers=trainers)
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
@@ -47,7 +47,7 @@ def add():
                     "INSERT INTO trainer_trainer_specialty_mappings (trainer_id, trainer_specialty_id) VALUES (:trainer, :spec)"
                 ), {"trainer": new_trainer_id, "spec": spec_id})
         return redirect(url_for('trainers.list'))
-    return render_template('trainers/../templates/trainers/form.html', trainer=None, gyms=gyms, specialties=specialties,
+    return render_template('trainers/trainers/form.html', trainer=None, gyms=gyms, specialties=specialties,
                            selected_gyms=[], selected_specialties=[])
 
 @bp.route('/<int:trainer_id>/edit', methods=['GET', 'POST'])
@@ -107,7 +107,7 @@ def edit(trainer_id):
                     "DELETE FROM trainer_trainer_specialty_mappings WHERE trainer_id = :trainer AND trainer_specialty_id = :spec"
                 ), {"trainer": trainer_id, "spec": spec_id})
         return redirect(url_for('trainers.list'))
-    return render_template('trainers/../templates/trainers/form.html', trainer=trainer, gyms=gyms, specialties=specialties,
+    return render_template('trainers/trainers/form.html', trainer=trainer, gyms=gyms, specialties=specialties,
                            selected_gyms=current_gyms, selected_specialties=current_specialties)
 
 @bp.route('/<int:trainer_id>/delete', methods=['POST'])

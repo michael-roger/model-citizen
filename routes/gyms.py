@@ -9,7 +9,7 @@ def list():
     # List all gyms
     with engine.connect() as conn:
         gyms = conn.execute(text("SELECT * FROM gyms")).mappings().all()
-    return render_template('gyms/../templates/gyms/list.html', gyms=gyms)
+    return render_template('gyms/gyms/list.html', gyms=gyms)
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
@@ -55,7 +55,7 @@ def add():
                 ), {"gym": new_gym_id, "cust": cust_id})
         return redirect(url_for('gyms.list'))
     # GET: render form
-    return render_template('gyms/../templates/gyms/form.html', gym=None, amenities=amenities, trainers=trainers, customers=customers,
+    return render_template('gyms/gyms/form.html', gym=None, amenities=amenities, trainers=trainers, customers=customers,
                            selected_amenities=[], selected_trainers=[], selected_customers=[])
 
 @bp.route('/<int:gym_id>/edit', methods=['GET', 'POST'])
@@ -133,7 +133,7 @@ def edit(gym_id):
                 ), {"gym": gym_id, "cust": cust_id})
         return redirect(url_for('gyms.list'))
     # GET: render edit form
-    return render_template('gyms/../templates/gyms/form.html', gym=gym, amenities=amenities, trainers=trainers, customers=customers,
+    return render_template('gyms/gyms/form.html', gym=gym, amenities=amenities, trainers=trainers, customers=customers,
                            selected_amenities=current_amenities, selected_trainers=current_trainers,
                            selected_customers=current_customers)
 
