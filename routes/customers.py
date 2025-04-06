@@ -18,7 +18,7 @@ def list():
 def add():
     # Fetch options for related multi-selects
     with engine.connect() as conn:
-        gyms = conn.execute(text("SELECT id, city, state FROM gyms")).mappings().all()
+        gyms = conn.execute(text("SELECT id, address1, city, state FROM gyms")).mappings().all()
         trainers = conn.execute(text("SELECT id, first_name, last_name FROM trainers")).mappings().all()
     if request.method == 'POST':
         data = {
