@@ -3,9 +3,6 @@ import db
 
 app = Flask(__name__)
 
-# Initialize database (create tables from schema if needed)
-db.init_db()
-
 # Register Blueprints for each entity
 from routes import trainers, gyms, amenities, trainer_specialties, equipment, group_classes, membership_types, \
     customers, group_class_types, membership_purchases
