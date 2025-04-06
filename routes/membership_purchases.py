@@ -12,7 +12,7 @@ def list():
             "mp.membership_type_id, mt.name AS membership_type_name "
             "FROM membership_purchases mp LEFT JOIN membership_types mt ON mp.membership_type_id = mt.id"
         )).mappings().all()
-    return render_template('membership_purchases/membership_purchases/list.html', purchases=purchases)
+    return render_template('membership_purchases/list.html', purchases=purchases)
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
@@ -39,7 +39,7 @@ def add():
                     "VALUES (:cust, :mp)"
                 ), {"cust": cust_id, "mp": new_purchase_id})
         return redirect(url_for('membership_purchases.list'))
-    return render_template('membership_purchases/membership_purchases/form.html', purchase=None,
+    return render_template('membership_purchases/form.html', purchase=None,
                            membership_types=membership_types, customers=customers, selected_customers=[])
 
 @bp.route('/<int:purchase_id>/edit', methods=['GET', 'POST'])
@@ -81,7 +81,7 @@ def edit(purchase_id):
                     "DELETE FROM customer_membership_purchase_mappings WHERE customer_id = :cust AND membership_purchase_id = :mp"
                 ), {"cust": cust_id, "mp": purchase_id})
         return redirect(url_for('membership_purchases.list'))
-    return render_template('membership_purchases/membership_purchases/form.html', purchase=purchase,
+    return render_template('membership_purchases/form.html', purchase=purchase,
                            membership_types=membership_types, customers=customers, selected_customers=current_customers)
 
 @bp.route('/<int:purchase_id>/delete', methods=['POST'])

@@ -17,7 +17,7 @@ def list():
             "LEFT JOIN gyms ON gc.gym_id = gyms.id "
             "LEFT JOIN trainers ON gc.trainer_id = trainers.id"
         )).mappings().all()
-    return render_template('group_classes/group_classes/list.html', group_classes=classes)
+    return render_template('group_classes/list.html', group_classes=classes)
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
@@ -46,7 +46,7 @@ def add():
                     "VALUES (:cust, :class, now())"
                 ), {"cust": cust_id, "class": new_class_id})
         return redirect(url_for('group_classes.list'))
-    return render_template('group_classes/group_classes/form.html', group_class=None, types=types, gyms=gyms, trainers=trainers,
+    return render_template('group_classes/form.html', group_class=None, types=types, gyms=gyms, trainers=trainers,
                            customers=customers, selected_customers=[])
 
 @bp.route('/<int:class_id>/edit', methods=['GET', 'POST'])
@@ -89,7 +89,7 @@ def edit(class_id):
                     "DELETE FROM customer_group_class_mappings WHERE customer_id = :cust AND group_class_id = :class"
                 ), {"cust": cust_id, "class": class_id})
         return redirect(url_for('group_classes.list'))
-    return render_template('group_classes/group_classes/form.html', group_class=group_class, types=types, gyms=gyms, trainers=trainers,
+    return render_template('group_classes/form.html', group_class=group_class, types=types, gyms=gyms, trainers=trainers,
                            customers=customers, selected_customers=current_customers)
 
 @bp.route('/<int:class_id>/delete', methods=['POST'])
