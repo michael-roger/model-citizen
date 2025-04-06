@@ -1,2 +1,2 @@
 # config.py
-DATABASE_URI = "postgresql://username:password@localhost:5432/model_citizen_db"
+DATABASE_URI = "postgresql://mr4217:789551@34.148.223.31:5432/proj1part2"
