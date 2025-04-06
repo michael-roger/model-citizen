@@ -62,7 +62,7 @@ def edit(class_id):
         customers = conn.execute(text("SELECT id, first_name, last_name FROM customers")).mappings().all()
         current_customers = {row['customer_id'] for row in conn.execute(text(
             "SELECT customer_id FROM customer_group_class_mappings WHERE group_class_id = :class"
-        ), {"class": class_id})}
+        ), {"class": class_id}).mappings()}
     if request.method == 'POST':
         data = {
             "id": class_id,

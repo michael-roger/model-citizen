@@ -54,7 +54,7 @@ def edit(purchase_id):
         customers = conn.execute(text("SELECT id, first_name, last_name FROM customers")).mappings().all()
         current_customers = {row['customer_id'] for row in conn.execute(text(
             "SELECT customer_id FROM customer_membership_purchase_mappings WHERE membership_purchase_id = :mp"
-        ), {"mp": purchase_id})}
+        ), {"mp": purchase_id}).mappings()}
     if request.method == 'POST':
         data = {
             "id": purchase_id,

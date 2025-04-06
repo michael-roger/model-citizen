@@ -70,13 +70,13 @@ def edit(gym_id):
         # Current related items
         current_amenities = {row['amenity_id'] for row in conn.execute(text(
             "SELECT amenity_id FROM gym_amenity_mappings WHERE gym_id = :gym"
-        ), {"gym": gym_id})}
+        ), {"gym": gym_id}).mappings()}
         current_trainers = {row['trainer_id'] for row in conn.execute(text(
             "SELECT trainer_id FROM gym_trainer_mappings WHERE gym_id = :gym"
-        ), {"gym": gym_id})}
+        ), {"gym": gym_id}).mappings()}
         current_customers = {row['customer_id'] for row in conn.execute(text(
             "SELECT customer_id FROM gym_customer_mappings WHERE gym_id = :gym"
-        ), {"gym": gym_id})}
+        ), {"gym": gym_id}).mappings()}
     if request.method == 'POST':
         data = {
             "id": gym_id,

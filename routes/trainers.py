@@ -61,10 +61,10 @@ def edit(trainer_id):
         specialties = conn.execute(text("SELECT id, name FROM trainer_specialties")).mappings().all()
         current_gyms = {row['gym_id'] for row in conn.execute(text(
             "SELECT gym_id FROM gym_trainer_mappings WHERE trainer_id = :trainer"
-        ), {"trainer": trainer_id})}
+        ), {"trainer": trainer_id}).mappings()}
         current_specialties = {row['trainer_specialty_id'] for row in conn.execute(text(
             "SELECT trainer_specialty_id FROM trainer_trainer_specialty_mappings WHERE trainer_id = :trainer"
-        ), {"trainer": trainer_id})}
+        ), {"trainer": trainer_id}).mappings()}
     if request.method == 'POST':
         data = {
             "id": trainer_id,
