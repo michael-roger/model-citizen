@@ -12,7 +12,7 @@
         <td>{{ gym['id'] }}</td>
         <td>
             {{ gym['address1'] }}{% if gym['address2'] %}, {{ gym['address2'] }}{% endif %},
-            {{ gym['city'] }}, {{ gym['state'] }} {{ gym['zip'] }}
+            {{ gym['address1'] }}, {{ gym['city'] }}, {{ gym['state'] }} {{ gym['zip'] }}
         </td>
         <td>
             <a href="{{ url_for('gyms.edit', gym_id=gym['id']) }}" class="btn btn-secondary btn-sm">Edit</a>

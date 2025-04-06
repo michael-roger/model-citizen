@@ -18,7 +18,7 @@ def list():
 def add():
     # Need list of gyms for the gym dropdown
     with engine.connect() as conn:
-        gyms = conn.execute(text("SELECT id, city, state FROM gyms")).mappings().all()
+        gyms = conn.execute(text("SELECT id, address1, city, state FROM gyms")).mappings().all()
     if request.method == 'POST':
         data = {
             "name": request.form.get('name', ''),
@@ -42,7 +42,7 @@ def edit(equipment_id):
         ), {"id": equipment_id}).mappings().one_or_none()
         if equipment is None:
             return redirect(url_for('equipment.list'))
-        gyms = conn.execute(text("SELECT id, city, state FROM gyms")).mappings().all()
+        gyms = conn.execute(text("SELECT id, address1, city, state FROM gyms")).mappings().all()
     if request.method == 'POST':
         data = {
             "id": equipment_id,

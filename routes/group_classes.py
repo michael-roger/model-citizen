@@ -23,7 +23,7 @@ def list():
 def add():
     with engine.connect() as conn:
         types = conn.execute(text("SELECT id, name FROM group_class_types")).mappings().all()
-        gyms = conn.execute(text("SELECT id, city, state FROM gyms")).mappings().all()
+        gyms = conn.execute(text("SELECT id, address1, city, state FROM gyms")).mappings().all()
         trainers = conn.execute(text("SELECT id, first_name, last_name FROM trainers")).mappings().all()
         customers = conn.execute(text("SELECT id, first_name, last_name FROM customers")).mappings().all()
     if request.method == 'POST':
@@ -57,7 +57,7 @@ def edit(class_id):
         if group_class is None:
             return redirect(url_for('group_classes.list'))
         types = conn.execute(text("SELECT id, name FROM group_class_types")).mappings().all()
-        gyms = conn.execute(text("SELECT id, city, state FROM gyms")).mappings().all()
+        gyms = conn.execute(text("SELECT id, address1, city, state FROM gyms")).mappings().all()
         trainers = conn.execute(text("SELECT id, first_name, last_name FROM trainers")).mappings().all()
         customers = conn.execute(text("SELECT id, first_name, last_name FROM customers")).mappings().all()
         current_customers = {row['customer_id'] for row in conn.execute(text(

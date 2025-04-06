@@ -16,7 +16,7 @@ def list():
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
     with engine.connect() as conn:
-        gyms = conn.execute(text("SELECT id, city, state FROM gyms")).mappings().all()
+        gyms = conn.execute(text("SELECT id, address1, city, state FROM gyms")).mappings().all()
         specialties = conn.execute(text("SELECT id, name FROM trainer_specialties")).mappings().all()
     if request.method == 'POST':
         data = {
@@ -57,7 +57,7 @@ def edit(trainer_id):
             .mappings().one_or_none()
         if trainer is None:
             return redirect(url_for('trainers.list'))
-        gyms = conn.execute(text("SELECT id, city, state FROM gyms")).mappings().all()
+        gyms = conn.execute(text("SELECT id, address1, city, state FROM gyms")).mappings().all()
         specialties = conn.execute(text("SELECT id, name FROM trainer_specialties")).mappings().all()
         current_gyms = {row['gym_id'] for row in conn.execute(text(
             "SELECT gym_id FROM gym_trainer_mappings WHERE trainer_id = :trainer"

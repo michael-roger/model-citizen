@@ -24,7 +24,7 @@
             {% for gym in gyms %}
             <option value="{{ gym['id'] }}"
                     {% if equipment and equipment['gym_id'] == gym['id'] %}selected{% endif %}>
-            {{ gym['city'] }}, {{ gym['state'] }}
+            {{ gym['address1'] }}, {{ gym['city'] }}, {{ gym['state'] }}
             </option>
             {% endfor %}
         </select>
