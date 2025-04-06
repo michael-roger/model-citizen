@@ -95,9 +95,11 @@ def edit(trainer_id):
                 "photo_url=:photo_url, certifications=:certifications, years_experience=:years_experience WHERE id = :id"
             ), data)
             for gym_id in to_add_gyms:
-                conn.execute(text(
-                    "INSERT INTO gym_trainer_mappings (gym_id, trainer_id) VALUES (:gym, :trainer)"
-                ), {"gym": gym_id, "trainer": trainer_id})
+                conn.execute(text("""
+                    INSERT INTO gym_trainer_mappings (gym_id, trainer_id)
+                    VALUES (:gym, :trainer)
+                    ON CONFLICT (gym_id, trainer_id) DO NOTHING
+                """), {"gym": gym_id, "trainer": trainer_id})
             for gym_id in to_remove_gyms:
                 conn.execute(text(
                     "DELETE FROM gym_trainer_mappings WHERE gym_id = :gym AND trainer_id = :trainer"
