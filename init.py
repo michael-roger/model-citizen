@@ -1,5 +1,4 @@
 from flask import Flask, render_template
-import db
 
 app = Flask(__name__)
 
@@ -21,4 +20,4 @@ app.register_blueprint(trainers.bp)
 # Home page route
 @app.route('/')
 def index():
-    return render_template('templates/index.html')
+    return render_template('index.html')
