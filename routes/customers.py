@@ -62,7 +62,7 @@ def edit(customer_id):
             .mappings().one_or_none()
         if customer is None:
             return redirect(url_for('customers.list'))
-        gyms = conn.execute(text("SELECT id,  city, state FROM gyms")).mappings().all()
+        gyms = conn.execute(text("SELECT id, address1, city, state FROM gyms")).mappings().all()
         trainers = conn.execute(text("SELECT id, first_name, last_name FROM trainers")).mappings().all()
         # Current related gyms and trainers for this customer
         current_gyms = {row['gym_id'] for row in conn.execute(text(
