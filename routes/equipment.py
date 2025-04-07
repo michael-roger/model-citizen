@@ -10,7 +10,7 @@ def list():
     with engine.connect() as conn:
         equipment = conn.execute(text(
             "SELECT e.id, e.name, e.serial_number, e.gym_id, g.city AS gym_city "
-            "FROM equipment e LEFT JOIN gyms g ON e.gym_id = g.id"
+            "FROM equipment e LEFT JOIN gyms g ON e.gym_id = g.id ORDER BY id ASC"
         )).mappings().all()
     return render_template('equipment/list.html', equipment=equipment)
 

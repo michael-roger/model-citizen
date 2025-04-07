@@ -8,7 +8,7 @@ bp = Blueprint('amenities', __name__, url_prefix='/amenities')
 def list():
     # List all amenities
     with engine.connect() as conn:
-        result = conn.execute(text("SELECT id, name, photo_url FROM amenities"))
+        result = conn.execute(text("SELECT id, name, photo_url FROM amenities ORDER BY id ASC"))
         amenities = result.mappings().all()
     return render_template('amenities/list.html', amenities=amenities)
 

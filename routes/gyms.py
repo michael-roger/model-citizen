@@ -8,7 +8,7 @@ bp = Blueprint('gyms', __name__, url_prefix='/gyms')
 def list():
     # List all gyms
     with engine.connect() as conn:
-        gyms = conn.execute(text("SELECT * FROM gyms")).mappings().all()
+        gyms = conn.execute(text("SELECT * FROM gyms ORDER BY id ASC")).mappings().all()
     return render_template('gyms/list.html', gyms=gyms)
 
 @bp.route('/add', methods=['GET', 'POST'])

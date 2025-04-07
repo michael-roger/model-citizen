@@ -7,7 +7,7 @@ bp = Blueprint('membership_types', __name__, url_prefix='/membership_types')
 @bp.route('/')
 def list():
     with engine.connect() as conn:
-        membership_types = conn.execute(text("SELECT * FROM membership_types")).mappings().all()
+        membership_types = conn.execute(text("SELECT * FROM membership_types ORDER BY id ASC")).mappings().all()
     return render_template('membership_types/list.html', membership_types=membership_types)
 
 @bp.route('/add', methods=['GET', 'POST'])

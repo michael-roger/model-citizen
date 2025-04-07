@@ -13,7 +13,7 @@ def list():
     # List all trainers (a few fields for brevity)
     with engine.connect() as conn:
         trainers = conn.execute(text(
-            "SELECT id, first_name, last_name, job_title, years_experience FROM trainers"
+            "SELECT id, first_name, last_name, job_title, years_experience FROM trainers ORDER BY id ASC"
         )).mappings().all()
     return render_template('trainers/list.html', trainers=trainers)
 
