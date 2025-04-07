@@ -13,7 +13,7 @@ def list():
     # List all customers
     with engine.connect() as conn:
         result = conn.execute(text(
-            "SELECT id, first_name, last_name, date_of_birth, photo_url FROM customers"
+            "SELECT id, first_name, last_name, date_of_birth, photo_url FROM customers ORDER BY id ASC"
         ))
         customers = result.mappings().all()
     return render_template('customers/list.html', customers=customers)
