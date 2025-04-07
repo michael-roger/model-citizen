@@ -15,7 +15,7 @@ def list():
             "FROM group_classes gc "
             "LEFT JOIN group_class_types gct ON gc.group_class_type_id = gct.id "
             "LEFT JOIN gyms ON gc.gym_id = gyms.id "
-            "LEFT JOIN trainers ON gc.trainer_id = trainers.id"
+            "LEFT JOIN trainers ON gc.trainer_id = trainers.id "
             "ORDER BY id ASC"
         )).mappings().all()
     return render_template('group_classes/list.html', group_classes=classes)

@@ -10,7 +10,8 @@ def list():
         purchases = conn.execute(text(
             "SELECT mp.id, mp.amount_charged, mp.date_of_membership_start, mp.date_of_membership_end, "
             "mp.membership_type_id, mt.name AS membership_type_name "
-            "FROM membership_purchases mp LEFT JOIN membership_types mt ON mp.membership_type_id = mt.id"
+            "FROM membership_purchases mp LEFT JOIN membership_types mt ON mp.membership_type_id = mt.id "
+            "ORDER BY id ASC"
         )).mappings().all()
     return render_template('membership_purchases/list.html', purchases=purchases)
 
