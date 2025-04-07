@@ -4,6 +4,10 @@ from db import engine
 
 bp = Blueprint('customers', __name__, url_prefix='/customers')
 
+# Helper function to convert empty strings to None
+def empty_to_none(value):
+    return value if value else None
+
 @bp.route('/')
 def list():
     # List all customers
@@ -76,7 +80,7 @@ def edit(customer_id):
             "id": customer_id,
             "first_name": request.form.get('first_name', ''),
             "last_name": request.form.get('last_name', ''),
-            "date_of_birth": request.form.get('date_of_birth', None),
+            "date_of_birth": empty_to_none(request.form.get('date_of_birth', None)),
             "photo_url": request.form.get('photo_url', '')
         }
         selected_gyms = set(request.form.getlist('gyms'))
