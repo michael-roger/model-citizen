@@ -7,8 +7,9 @@
         <select name="membership_type_id" id="membership_type_id" class="form-select" required>
             <option value="">-- Select Membership Type --</option>
             {% for mt in membership_types %}
-            <option value="{{ mt['id'] }}" {% if purchase and purchase['membership_type_id'] == mt['id'] %}selected{% endif %}>
-            {{ mt['name'] }}
+            <option value="{{ mt['id'] }}" data-price="{{ mt['price'] }}"
+                {% if purchase and purchase['membership_type_id'] == mt['id'] %}selected{% endif %}>
+                {{ mt['name'] }}
             </option>
             {% endfor %}
         </select>
@@ -17,6 +18,9 @@
         <label for="amount_charged" class="form-label">Amount Charged</label>
         <input name="amount_charged" id="amount_charged" type="number" step="0.01" class="form-control"
                value="{{ purchase['amount_charged'] if purchase and purchase['amount_charged'] != None else '' }}">
+        <small class="form-text text-muted">
+            Will auto-fill with default membership price but can be changed.
+        </small>
     </div>
     <div class="mb-3">
         <label for="date_of_membership_start" class="form-label">Start Date</label>
@@ -45,3 +49,18 @@
     <a href="{{ url_for('membership_purchases.list') }}" class="btn btn-light">Cancel</a>
 </form>
 {% endblock %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const typeSelect = document.getElementById("membership_type_id");
+        const amountInput = document.getElementById("amount_charged");
+    
+        typeSelect.addEventListener("change", function () {
+            const selected = typeSelect.options[typeSelect.selectedIndex];
+            const price = selected.getAttribute("data-price");
+            if (price && (!amountInput.value || amountInput.value === "0")) {
+                amountInput.value = parseFloat(price).toFixed(2);
+            }
+        });
+    });
+    </script>    
