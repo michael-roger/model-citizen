@@ -83,8 +83,8 @@ def edit(customer_id):
             "date_of_birth": empty_to_none(request.form.get('date_of_birth', None)),
             "photo_url": request.form.get('photo_url', '')
         }
-        selected_gyms = set(request.form.getlist('gyms'))
-        selected_trainers = set(request.form.getlist('trainers'))
+        selected_gyms = {int(gym_id) for gym_id in request.form.getlist('gyms')}
+        selected_trainers = {int(trainer_id) for trainer_id in request.form.getlist('trainers')}
         # Determine which relationships to add or remove
         to_add_gyms = selected_gyms - current_gyms
         to_remove_gyms = current_gyms - selected_gyms
