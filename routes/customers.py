@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 from db import engine
 
 bp = Blueprint('customers', __name__, url_prefix='/customers')
@@ -33,28 +34,30 @@ def add():
         }
         selected_gyms = request.form.getlist('gyms')            # list of gym IDs
         selected_trainers = request.form.getlist('trainers')    # list of trainer IDs
-        with engine.begin() as conn:
-            # Insert new customer
-            result = conn.execute(text(
-                "INSERT INTO customers (first_name, last_name, date_of_birth, photo_url) "
-                "VALUES (:first_name, :last_name, :date_of_birth, :photo_url) RETURNING id"
-            ), data)
-            new_cust_id = result.scalar_one()
-            # Insert customer-gym relationships
-            for gym_id in selected_gyms:
-                conn.execute(text(
-                    "INSERT INTO gym_customer_mappings (gym_id, customer_id, created_datetime_utc) "
-                    "VALUES (:gym, :cust, now()) "
-                    "ON CONFLICT (gym_id, customer_id) DO NOTHING"
-                ), {"gym": gym_id, "cust": new_cust_id})
-            # Insert customer-trainer relationships
-            for trainer_id in selected_trainers:
-                conn.execute(text(
-                    "INSERT INTO customer_trainer_mappings (customer_id, trainer_id, created_datetime_utc) "
-                    "VALUES (:cust, :trainer, now()) "
-                    "ON CONFLICT (customer_id, trainer_id) DO NOTHING"
-                ), {"cust": new_cust_id, "trainer": trainer_id})
-        return redirect(url_for('customers.list'))
+        try:
+            with engine.begin() as conn:
+                result = conn.execute(text(
+                    "INSERT INTO customers (first_name, last_name, date_of_birth, photo_url) "
+                    "VALUES (:first_name, :last_name, :date_of_birth, :photo_url) RETURNING id"
+                ), data)
+                new_cust_id = result.scalar_one()
+                for gym_id in selected_gyms:
+                    conn.execute(text(
+                        "INSERT INTO gym_customer_mappings (gym_id, customer_id, created_datetime_utc) "
+                        "VALUES (:gym, :cust, now()) ON CONFLICT (gym_id, customer_id) DO NOTHING"
+                    ), {"gym": gym_id, "cust": new_cust_id})
+                for trainer_id in selected_trainers:
+                    conn.execute(text(
+                        "INSERT INTO customer_trainer_mappings (customer_id, trainer_id, created_datetime_utc) "
+                        "VALUES (:cust, :trainer, now()) ON CONFLICT (customer_id, trainer_id) DO NOTHING"
+                    ), {"cust": new_cust_id, "trainer": trainer_id})
+            return redirect(url_for('customers.list'))
+        except SQLAlchemyError as e:
+            error_msg = "An error occurred while saving the customer. Please check all inputs, especially date of birth."
+            return render_template('customers/form.html', customer=data, gyms=gyms, trainers=trainers,
+                                   selected_gyms=[int(id) for id in selected_gyms],
+                                   selected_trainers=[int(id) for id in selected_trainers],
+                                   error=error_msg)
     # GET: display form
     return render_template('customers/form.html', customer=None, gyms=gyms, trainers=trainers,
                            selected_gyms=[], selected_trainers=[])
@@ -90,33 +93,40 @@ def edit(customer_id):
         to_remove_gyms = current_gyms - selected_gyms
         to_add_trainers = selected_trainers - current_trainers
         to_remove_trainers = current_trainers - selected_trainers
-        with engine.begin() as conn:
-            # Update customer info
-            conn.execute(text(
-                "UPDATE customers SET first_name=:first_name, last_name=:last_name, "
-                "date_of_birth=:date_of_birth, photo_url=:photo_url WHERE id = :id"
-            ), data)
-            # Update gym relationships
-            for gym_id in to_add_gyms:
+        try:
+            with engine.begin() as conn:
+                # Update customer info
                 conn.execute(text(
-                    "INSERT INTO gym_customer_mappings (gym_id, customer_id, created_datetime_utc) "
-                    "VALUES (:gym, :cust, now())"
-                ), {"gym": gym_id, "cust": customer_id})
-            for gym_id in to_remove_gyms:
-                conn.execute(text(
-                    "DELETE FROM gym_customer_mappings WHERE gym_id = :gym AND customer_id = :cust"
-                ), {"gym": gym_id, "cust": customer_id})
-            # Update trainer relationships
-            for trainer_id in to_add_trainers:
-                conn.execute(text(
-                    "INSERT INTO customer_trainer_mappings (customer_id, trainer_id, created_datetime_utc) "
-                    "VALUES (:cust, :trainer, now())"
-                ), {"cust": customer_id, "trainer": trainer_id})
-            for trainer_id in to_remove_trainers:
-                conn.execute(text(
-                    "DELETE FROM customer_trainer_mappings WHERE customer_id = :cust AND trainer_id = :trainer"
-                ), {"cust": customer_id, "trainer": trainer_id})
-        return redirect(url_for('customers.list'))
+                    "UPDATE customers SET first_name=:first_name, last_name=:last_name, "
+                    "date_of_birth=:date_of_birth, photo_url=:photo_url WHERE id = :id"
+                ), data)
+                # Update gym relationships
+                for gym_id in to_add_gyms:
+                    conn.execute(text(
+                        "INSERT INTO gym_customer_mappings (gym_id, customer_id, created_datetime_utc) "
+                        "VALUES (:gym, :cust, now())"
+                    ), {"gym": gym_id, "cust": customer_id})
+                for gym_id in to_remove_gyms:
+                    conn.execute(text(
+                        "DELETE FROM gym_customer_mappings WHERE gym_id = :gym AND customer_id = :cust"
+                    ), {"gym": gym_id, "cust": customer_id})
+                # Update trainer relationships
+                for trainer_id in to_add_trainers:
+                    conn.execute(text(
+                        "INSERT INTO customer_trainer_mappings (customer_id, trainer_id, created_datetime_utc) "
+                        "VALUES (:cust, :trainer, now())"
+                    ), {"cust": customer_id, "trainer": trainer_id})
+                for trainer_id in to_remove_trainers:
+                    conn.execute(text(
+                        "DELETE FROM customer_trainer_mappings WHERE customer_id = :cust AND trainer_id = :trainer"
+                    ), {"cust": customer_id, "trainer": trainer_id})
+            return redirect(url_for('customers.list'))
+        except SQLAlchemyError as e:
+            error_msg = "An error occurred while updating the customer. Please check all inputs, especially date of birth."
+            return render_template('customers/form.html', customer=data, gyms=gyms, trainers=trainers,
+                                selected_gyms=selected_gyms, selected_trainers=selected_trainers,
+                                error=error_msg)
+
     # GET: render form with current data and relationships
     return render_template('customers/form.html', customer=customer, gyms=gyms, trainers=trainers,
                            selected_gyms=current_gyms, selected_trainers=current_trainers)

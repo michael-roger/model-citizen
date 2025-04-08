@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
 <h2>{{ customer and 'Edit Customer' or 'Add Customer' }}</h2>
 <form method="post">
     <div class="mb-3">
