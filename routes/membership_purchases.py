@@ -65,7 +65,7 @@ def edit(purchase_id):
             "date_of_membership_end": request.form.get('date_of_membership_end', None),
             "membership_type_id": request.form.get('membership_type_id', None)
         }
-        selected_customers = set(request.form.getlist('customers'))
+        selected_customers = {int(c) for c in request.form.getlist('customers')}
         to_add_customers = selected_customers - current_customers
         to_remove_customers = current_customers - selected_customers
         with engine.begin() as conn:
@@ -76,7 +76,8 @@ def edit(purchase_id):
             for cust_id in to_add_customers:
                 conn.execute(text(
                     "INSERT INTO customer_membership_purchase_mappings (customer_id, membership_purchase_id) "
-                    "VALUES (:cust, :mp)"
+                    "VALUES (:cust, :mp) "
+                    "ON CONFLICT (customer_id, membership_purchase_id) DO NOTHING"
                 ), {"cust": cust_id, "mp": purchase_id})
             for cust_id in to_remove_customers:
                 conn.execute(text(
