@@ -92,9 +92,9 @@ def edit(gym_id):
             "zip": request.form.get('zip', ''),
             "photo_url": request.form.get('photo_url', '')
         }
-        selected_amenities = set(request.form.getlist('amenities'))
-        selected_trainers = set(request.form.getlist('trainers'))
-        selected_customers = set(request.form.getlist('customers'))
+        selected_amenities = {int(a) for a in request.form.getlist('amenities')}
+        selected_trainers = {int(t) for t in request.form.getlist('trainers')}
+        selected_customers = {int(c) for c in request.form.getlist('customers')}
         # Determine changes for each mapping
         to_add_amen = selected_amenities - current_amenities
         to_remove_amen = current_amenities - selected_amenities
@@ -111,7 +111,8 @@ def edit(gym_id):
             # Update amenity mappings
             for amen_id in to_add_amen:
                 conn.execute(text(
-                    "INSERT INTO gym_amenity_mappings (gym_id, amenity_id) VALUES (:gym, :amen)"
+                    "INSERT INTO gym_amenity_mappings (gym_id, amenity_id) VALUES (:gym, :amen) "
+                    "ON CONFLICT (gym_id, amenity_id) DO NOTHING"
                 ), {"gym": gym_id, "amen": amen_id})
             for amen_id in to_remove_amen:
                 conn.execute(text(
@@ -120,7 +121,8 @@ def edit(gym_id):
             # Update trainer mappings
             for trainer_id in to_add_trainers:
                 conn.execute(text(
-                    "INSERT INTO gym_trainer_mappings (gym_id, trainer_id) VALUES (:gym, :trainer)"
+                    "INSERT INTO gym_trainer_mappings (gym_id, trainer_id) VALUES (:gym, :trainer) "
+                    "ON CONFLICT (gym_id, trainer_id) DO NOTHING"
                 ), {"gym": gym_id, "trainer": trainer_id})
             for trainer_id in to_remove_trainers:
                 conn.execute(text(
@@ -130,7 +132,8 @@ def edit(gym_id):
             for cust_id in to_add_customers:
                 conn.execute(text(
                     "INSERT INTO gym_customer_mappings (gym_id, customer_id, created_datetime_utc) "
-                    "VALUES (:gym, :cust, now())"
+                    "VALUES (:gym, :cust, now()) "
+                    "ON CONFLICT (gym_id, customer_id, created_datetime_utc) DO NOTHING"
                 ), {"gym": gym_id, "cust": cust_id})
             for cust_id in to_remove_customers:
                 conn.execute(text(
