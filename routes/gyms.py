@@ -27,9 +27,9 @@ def add():
             "zip": request.form.get('zip', ''),
             "photo_url": request.form.get('photo_url', '')
         }
-        selected_amenities = request.form.getlist('amenities')  # amenity IDs
-        selected_trainers = request.form.getlist('trainers')    # trainer IDs
-        selected_customers = request.form.getlist('customers')  # customer IDs
+        selected_amenities = {int(a) for a in request.form.getlist('amenities')}
+        selected_trainers = {int(t) for t in request.form.getlist('trainers')}
+        selected_customers = {int(c) for c in request.form.getlist('customers')}
         with engine.begin() as conn:
             # Insert new gym
             result = conn.execute(text(
