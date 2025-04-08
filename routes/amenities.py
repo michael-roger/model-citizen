@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
+from flask import flash
 from db import engine
 
 bp = Blueprint('amenities', __name__, url_prefix='/amenities')
@@ -48,7 +50,9 @@ def edit(amenity_id):
 
 @bp.route('/<int:amenity_id>/delete', methods=['POST'])
 def delete(amenity_id):
-    # Delete amenity (will error if mappings exist, see note above)
-    with engine.begin() as conn:
-        conn.execute(text("DELETE FROM amenities WHERE id = :id"), {"id": amenity_id})
+    try:
+        with engine.begin() as conn:
+            conn.execute(text("DELETE FROM amenities WHERE id = :id"), {"id": amenity_id})
+    except IntegrityError:
+        flash("Cannot delete amenity: it's currently in use.")
     return redirect(url_for('amenities.list'))
