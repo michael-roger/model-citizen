@@ -73,7 +73,7 @@ def edit(class_id):
             "gym_id": request.form.get('gym_id', None),
             "trainer_id": request.form.get('trainer_id', None)
         }
-        selected_customers = set(request.form.getlist('customers'))
+        selected_customers = {int(c) for c in request.form.getlist('customers')}
         to_add_customers = selected_customers - current_customers
         to_remove_customers = current_customers - selected_customers
         with engine.begin() as conn:
@@ -84,7 +84,8 @@ def edit(class_id):
             for cust_id in to_add_customers:
                 conn.execute(text(
                     "INSERT INTO customer_group_class_mappings (customer_id, group_class_id, created_datetime_utc) "
-                    "VALUES (:cust, :class, now())"
+                    "VALUES (:cust, :class, now()) "
+                    "ON CONFLICT (customer_id, group_class_id) DO NOTHING"
                 ), {"cust": cust_id, "class": class_id})
             for cust_id in to_remove_customers:
                 conn.execute(text(

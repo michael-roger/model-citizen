@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
+from flask import flash
 from db import engine
 
 bp = Blueprint('group_class_types', __name__, url_prefix='/group_class_types')
@@ -47,6 +49,9 @@ def edit(type_id):
 
 @bp.route('/<int:type_id>/delete', methods=['POST'])
 def delete(type_id):
-    with engine.begin() as conn:
-        conn.execute(text("DELETE FROM group_class_types WHERE id = :id"), {"id": type_id})
+    try:
+        with engine.begin() as conn:
+            conn.execute(text("DELETE FROM group_class_types WHERE id = :id"), {"id": type_id})
+    except IntegrityError:
+        flash("Cannot delete this class type. It is being used by one or more classes.")
     return redirect(url_for('group_class_types.list'))
