@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
+from flask import flash
 from db import engine
 
 bp = Blueprint('trainer_specialties', __name__, url_prefix='/trainer_specialties')
@@ -47,6 +49,9 @@ def edit(specialty_id):
 
 @bp.route('/<int:specialty_id>/delete', methods=['POST'])
 def delete(specialty_id):
-    with engine.begin() as conn:
-        conn.execute(text("DELETE FROM trainer_specialties WHERE id = :id"), {"id": specialty_id})
+    try:
+        with engine.begin() as conn:
+            conn.execute(text("DELETE FROM trainer_specialties WHERE id = :id"), {"id": specialty_id})
+    except IntegrityError:
+        flash("Cannot delete this specialty because it is currently assigned to one or more trainers.")
     return redirect(url_for('trainer_specialties.list'))

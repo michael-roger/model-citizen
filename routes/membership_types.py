@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
+from flask import flash
 from db import engine
 
 bp = Blueprint('membership_types', __name__, url_prefix='/membership_types')
@@ -49,6 +51,9 @@ def edit(type_id):
 
 @bp.route('/<int:type_id>/delete', methods=['POST'])
 def delete(type_id):
-    with engine.begin() as conn:
-        conn.execute(text("DELETE FROM membership_types WHERE id = :id"), {"id": type_id})
+    try:
+        with engine.begin() as conn:
+            conn.execute(text("DELETE FROM membership_types WHERE id = :id"), {"id": type_id})
+    except IntegrityError:
+        flash("Cannot delete this membership type because it is currently in use.")
     return redirect(url_for('membership_types.list'))

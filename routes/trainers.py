@@ -84,8 +84,8 @@ def edit(trainer_id):
             "certifications": request.form.get('certifications', ''),
             "years_experience": request.form.get('years_experience', None)
         }
-        selected_gyms = set(request.form.getlist('gyms'))
-        selected_specialties = set(request.form.getlist('specialties'))
+        selected_gyms = {int(gym_id) for gym_id in request.form.getlist('gyms')}
+        selected_specialties = {int(spec_id) for spec_id in request.form.getlist('specialties')}
         to_add_gyms = selected_gyms - current_gyms
         to_remove_gyms = current_gyms - selected_gyms
         to_add_specs = selected_specialties - current_specialties
