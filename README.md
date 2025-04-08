@@ -6,6 +6,7 @@ Application URL: http://35.237.249.212:8111/
 Description: 
 We implemented the gym manager functionality for the database since this allows us to implement as many functionlities for our database as possible - after all, functionalities available for a gym manager includes all the functionalities a gym customer/ trainer could access. 
 The gym manager can see essentially all the entity sets and relations our database has. He can also edit, add, and view as he sees fit. 
+We thus essentially implemented all the features we set out to implement in Part One. 
 
 
 Two Interesting pages: 
