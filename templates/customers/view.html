@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ customer.first_name }} {{ customer.last_name }}</h2>
+
+{% if customer.photo_url %}
+    <img src="{{ customer.photo_url }}" alt="Photo" style="max-width: 150px;">
+{% endif %}
+
+<p><strong>Date of Birth:</strong> {{ customer.date_of_birth or 'N/A' }}</p>
+
+<hr>
+
+<h4>Associated Gyms</h4>
+<ul>
+    {% for gym in gyms %}
+        <li>{{ gym.address1 }}, {{ gym.city }}, {{ gym.state }}</li>
+    {% else %}
+        <p>No gym associations.</p>
+    {% endfor %}
+</ul>
+
+<h4>Personal Trainers</h4>
+<ul>
+    {% for trainer in trainers %}
+        <li>
+            {% if trainer.photo_url %}
+                <img src="{{ trainer.photo_url }}" style="height:30px; vertical-align:middle;">
+            {% endif %}
+            {{ trainer.first_name }} {{ trainer.last_name }}
+        </li>
+    {% else %}
+        <p>No trainer associations.</p>
+    {% endfor %}
+</ul>
+
+<h4>Group Classes</h4>
+<ul>
+    {% for c in classes %}
+        <li>
+            {{ c.class_datetime_utc.strftime('%Y-%m-%d %I:%M %p') }} -
+            {{ c.class_type or 'Unknown Type' }} @ {{ c.gym_city or 'Unknown Gym' }}
+        </li>
+    {% else %}
+        <p>No group classes signed up.</p>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('customers.list') }}" class="btn btn-light mt-3">Back to Customers</a>
+{% endblock %}

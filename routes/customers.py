@@ -138,3 +138,44 @@ def delete(customer_id):
     with engine.begin() as conn:
         conn.execute(text("DELETE FROM customers WHERE id = :id"), {"id": customer_id})
     return redirect(url_for('customers.list'))
+
+@bp.route('/<int:customer_id>/view')
+def view(customer_id):
+    with engine.connect() as conn:
+        # Customer core info
+        customer = conn.execute(text("SELECT * FROM customers WHERE id = :id"), {"id": customer_id}).mappings().one_or_none()
+        if customer is None:
+            return redirect(url_for('customers.list'))
+
+        # Associated gyms
+        gyms = conn.execute(text("""
+            SELECT g.id, g.address1, g.city, g.state
+            FROM gym_customer_mappings gcm
+            JOIN gyms g ON g.id = gcm.gym_id
+            WHERE gcm.customer_id = :id
+        """), {"id": customer_id}).mappings().all()
+
+        # Personal trainers
+        trainers = conn.execute(text("""
+            SELECT t.id, t.first_name, t.last_name, t.photo_url
+            FROM customer_trainer_mappings ctm
+            JOIN trainers t ON t.id = ctm.trainer_id
+            WHERE ctm.customer_id = :id
+        """), {"id": customer_id}).mappings().all()
+
+        # Group classes
+        classes = conn.execute(text("""
+            SELECT gc.id, gc.class_datetime_utc, gct.name AS class_type, g.city AS gym_city
+            FROM customer_group_class_mappings cgcm
+            JOIN group_classes gc ON gc.id = cgcm.group_class_id
+            LEFT JOIN group_class_types gct ON gc.group_class_type_id = gct.id
+            LEFT JOIN gyms g ON gc.gym_id = g.id
+            WHERE cgcm.customer_id = :id
+            ORDER BY gc.class_datetime_utc
+        """), {"id": customer_id}).mappings().all()
+
+    return render_template('customers/view.html',
+                           customer=customer,
+                           gyms=gyms,
+                           trainers=trainers,
+                           classes=classes)
