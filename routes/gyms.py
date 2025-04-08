@@ -147,3 +147,43 @@ def delete(gym_id):
     with engine.begin() as conn:
         conn.execute(text("DELETE FROM gyms WHERE id = :id"), {"id": gym_id})
     return redirect(url_for('gyms.list'))
+
+@bp.route('/<int:gym_id>/view')
+def view(gym_id):
+    with engine.connect() as conn:
+        gym = conn.execute(text("SELECT * FROM gyms WHERE id = :id"), {"id": gym_id}).mappings().one_or_none()
+        if gym is None:
+            return redirect(url_for('gyms.list'))
+
+        # Amenities (with photo)
+        amenities = conn.execute(text("""
+            SELECT a.name, a.photo_url
+            FROM gym_amenity_mappings gam
+            JOIN amenities a ON gam.amenity_id = a.id
+            WHERE gam.gym_id = :id
+        """), {"id": gym_id}).mappings().all()
+
+        # Trainers (full details)
+        trainers = conn.execute(text("""
+            SELECT t.first_name, t.last_name, t.photo_url, t.certifications, t.years_experience
+            FROM gym_trainer_mappings gtm
+            JOIN trainers t ON gtm.trainer_id = t.id
+            WHERE gtm.gym_id = :id
+        """), {"id": gym_id}).mappings().all()
+
+        # Group classes with type and trainer name
+        group_classes = conn.execute(text("""
+            SELECT gc.class_datetime_utc, gct.name AS class_type_name,
+                   t.first_name AS trainer_first_name, t.last_name AS trainer_last_name
+            FROM group_classes gc
+            LEFT JOIN group_class_types gct ON gc.group_class_type_id = gct.id
+            LEFT JOIN trainers t ON gc.trainer_id = t.id
+            WHERE gc.gym_id = :id
+            ORDER BY gc.class_datetime_utc
+        """), {"id": gym_id}).mappings().all()
+
+    return render_template('gyms/view.html',
+                           gym=gym,
+                           amenities=amenities,
+                           trainers=trainers,
+                           group_classes=group_classes)

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Gym Details</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>Location</h4>
+        <p>
+            {{ gym['address1'] }}{% if gym['address2'] %}, {{ gym['address2'] }}{% endif %}<br>
+            {{ gym['city'] }}, {{ gym['state'] }} {{ gym['zip'] }}
+        </p>
+
+        {% if gym['photo_url'] %}
+        <img src="{{ gym['photo_url'] }}" alt="Gym photo" class="img-fluid rounded mb-4" style="max-height: 300px;">
+        {% endif %}
+
+        <h4>Amenities</h4>
+        <div class="row">
+            {% for amenity in amenities %}
+            <div class="col-md-4 mb-3">
+                <strong>{{ amenity.name }}</strong><br>
+                {% if amenity.photo_url %}
+                <img src="{{ amenity.photo_url }}" alt="{{ amenity.name }}" class="img-thumbnail" style="max-height: 100px;">
+                {% endif %}
+            </div>
+            {% else %}
+            <p class="text-muted">No amenities listed.</p>
+            {% endfor %}
+        </div>
+
+        <h4>Trainers</h4>
+        <div class="row">
+            {% for trainer in trainers %}
+            <div class="col-md-6 mb-3">
+                <div class="card p-2">
+                    {% if trainer.photo_url %}
+                    <img src="{{ trainer.photo_url }}" alt="Trainer photo" class="img-thumbnail mb-2" style="max-height: 120px;">
+                    {% endif %}
+                    <strong>{{ trainer.first_name }} {{ trainer.last_name }}</strong><br>
+                    Certifications: {{ trainer.certifications or "None" }}<br>
+                    Experience: {{ trainer.years_experience or 0 }} years
+                </div>
+            </div>
+            {% else %}
+            <p class="text-muted">No trainers assigned to this gym.</p>
+            {% endfor %}
+        </div>
+
+        <h4>Group Classes</h4>
+        <ul class="list-group">
+            {% for cls in group_classes %}
+            <li class="list-group-item">
+                <strong>{{ cls.class_type_name or "Unnamed Class" }}</strong> – 
+                {{ cls.class_datetime_utc.strftime('%Y-%m-%d %H:%M') }}<br>
+                Trainer: {{ cls.trainer_first_name }} {{ cls.trainer_last_name }}
+            </li>
+            {% else %}
+            <li class="list-group-item text-muted">No group classes scheduled.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<a href="{{ url_for('gyms.list') }}" class="btn btn-light">← Back to Gym List</a>
+{% endblock %}
