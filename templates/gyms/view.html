@@ -34,7 +34,7 @@
             <div class="col-md-6 mb-3">
                 <div class="card p-2">
                     {% if trainer.photo_url %}
-                    <img src="{{ trainer.photo_url }}" alt="Trainer photo" class="img-thumbnail mb-2" style="max-height: 120px;">
+                    <img src="{{ trainer.photo_url }}" alt="Trainer photo" class="img-thumbnail mb-2" style="max-height: 120px; max-width: 200px;">
                     {% endif %}
                     <strong>{{ trainer.first_name }} {{ trainer.last_name }}</strong><br>
                     Certifications: {{ trainer.certifications or "None" }}<br>
