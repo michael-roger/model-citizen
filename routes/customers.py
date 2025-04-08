@@ -104,7 +104,8 @@ def edit(customer_id):
                 for gym_id in to_add_gyms:
                     conn.execute(text(
                         "INSERT INTO gym_customer_mappings (gym_id, customer_id, created_datetime_utc) "
-                        "VALUES (:gym, :cust, now())"
+                        "VALUES (:gym, :cust, now()) "
+                        "ON CONFLICT (gym_id, customer_id) DO NOTHING"
                     ), {"gym": gym_id, "cust": customer_id})
                 for gym_id in to_remove_gyms:
                     conn.execute(text(
@@ -114,7 +115,8 @@ def edit(customer_id):
                 for trainer_id in to_add_trainers:
                     conn.execute(text(
                         "INSERT INTO customer_trainer_mappings (customer_id, trainer_id, created_datetime_utc) "
-                        "VALUES (:cust, :trainer, now())"
+                        "VALUES (:cust, :trainer, now()) "
+                        "ON CONFLICT (customer_id, trainer_id) DO NOTHING"
                     ), {"cust": customer_id, "trainer": trainer_id})
                 for trainer_id in to_remove_trainers:
                     conn.execute(text(
