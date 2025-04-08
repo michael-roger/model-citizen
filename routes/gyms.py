@@ -133,7 +133,7 @@ def edit(gym_id):
                 conn.execute(text(
                     "INSERT INTO gym_customer_mappings (gym_id, customer_id, created_datetime_utc) "
                     "VALUES (:gym, :cust, now()) "
-                    "ON CONFLICT (gym_id, customer_id, created_datetime_utc) DO NOTHING"
+                    "ON CONFLICT (gym_id, customer_id) DO NOTHING"
                 ), {"gym": gym_id, "cust": cust_id})
             for cust_id in to_remove_customers:
                 conn.execute(text(
